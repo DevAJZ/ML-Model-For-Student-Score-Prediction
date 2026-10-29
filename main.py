@@ -1,15 +1,18 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from sklearn.model_selection import(train_test_split)
+from sklearn.ensemble import(RandomForestRegressor)
+from sklearn.metrics import mean_absolute_error
 # 1. Load the messy dataset
 df = pd.read_csv("Student_performance_messy.csv")
 
 print("Original dataset shape:", df.shape)
 #duplicated rows of original dataset
-print("number of duplicate rows:",df.duplicated().sum())
+print("number of duplicate rows:", df.duplicated().sum())
 #information about the original dataset
 print(df.info())
 #number of missing values of the original dataset
-print(df.isnull().sum().sum())
+print("number of missing values:", df.isnull().sum().sum())
 
 # Cleaning the messy dataset
 # 2. Standardize missing-value representations
@@ -130,3 +133,37 @@ print(df.isnull().sum())
 print("\nRemaining duplicate rows:", df.duplicated().sum())
 
 print("\nCleaned dataset saved as Student_performance_cleaned.csv")
+
+#Visualize
+plt.scatter(df.study_hours, df.exam_score)
+plt.xlabel("Study Hours")
+plt.ylabel("Exam Score")
+plt.show()
+
+#Train
+X = df[["study_hours", "attendance_percent", "previous_score", "sleep_hours"]]
+y = df["exam_score"]
+#80% train, 20% test
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+#fill missing rows
+medians = X_train.median()
+X_train = X_train.fillna(medians)
+X_test = X_test.fillna(medians)
+#Random Forest: collection of decision trees
+model = RandomForestRegressor(random_state=42)
+model.fit(X_train, y_train)
+
+#Evaluate: here we compare the predicted result against the actual result using MAE(Mean Absolute Error)
+predictions = model.predict(X_test)
+mae = mean_absolute_error(y_test, predictions)
+print("MAE(Mean Absolute Error):", round(mae, 1))
+
+#Predict: predict the exam score of a student with 10 study hours, 80% attendance, 70 previous score, and 7 sleep hours
+new_student = pd.DataFrame({
+    "study_hours": [10],
+    "attendance_percent": [80],
+    "previous_score": [70],
+    "sleep_hours": [7]
+})
+predicted_score = model.predict(new_student)[0]
+print("Predicted exam score for the new student:", round(predicted_score, 1))
