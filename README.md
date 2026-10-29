@@ -4,6 +4,8 @@ A Python machine learning project that cleans messy student records and predicts
 
 The project demonstrates data cleaning, exploratory visualization, train/test splitting, missing-value handling, regression, and evaluation with scikit-learn. The current implementation is a runnable script using a **Random Forest regressor**.
 
+**Note:** You can use your own messy student dataset by replacing `Student_performance_messy.csv`, provided it follows the required column names and format described above. The script will apply its cleaning rules, visualize study hours against exam scores, and train a model to predict exam scores. Your dataset must include known exam scores for training and evaluation.
+
 ## Results at a glance
 
 | Item | Verified result |
